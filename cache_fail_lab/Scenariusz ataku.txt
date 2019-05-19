@@ -1,0 +1,7 @@
+Scenariusz ataku
+1. ofiara loguje się (startuje sesje) - http://localhost:8080/login.php
+2. ofiara klika na link z plikiem statycznym - http://localhost:8080/login.php/static.css - kontent zostaje umieszczony w cache
+3. atakujacy otwiera link i odczytuje zawartość cache z wrazliwymi danymi
+4. Zapobieganie: 
+	OWASP ASVS 8.1.1
+	OWASP ASVS 8.2.1
