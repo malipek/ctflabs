@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  revproxy:
+    build:
+      context: .
+      dockerfile: .docker/proxy.dockerfile
+    image: conn_exh_lab_revproxy
+    ports:
+      - 8000:80
+    depends_on:
+      - app
+    links:
+      - app
+
+  app:
+    build:
+      context: .
+      dockerfile: .docker/app.dockerfile
+    image: conn_exh_lab_app
+    ports:
+      - 8088:81
+    volumes:
+      - ./html:/var/www/html
