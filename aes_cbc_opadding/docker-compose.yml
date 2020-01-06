@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/app.dockerfile
+    image: cbc_poc_lab_app
+    ports:
+      - 8080:81
+    volumes:
+      - ./html:/var/www/html
+    depends_on:
+      - redis
+
+    links:
+      - redis
+
+  redis:
+    build:
+      context: .
+      dockerfile: .docker/redis_cbc.dockerfile
+    image: redis_cbc
+
