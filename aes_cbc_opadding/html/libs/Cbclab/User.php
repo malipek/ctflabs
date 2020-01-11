@@ -90,7 +90,13 @@ class Cbclab_User{
         // create token for COOKIE - AES-128 CBC from username
         // generate iv
         $iv = openssl_random_pseudo_bytes(self::IVLEN);
-        $encrypted = openssl_encrypt($this->loggedUser, self::ALG, self::AESKEY, OPENSSL_RAW_DATA,$iv);
+	$token=[
+	"loggedUser"=>$this->loggedUser,
+	"expires"=>time()+3600,
+	"someVar"=>"someValue"
+	];
+	$token = json_encode($token);
+        $encrypted = openssl_encrypt($token, self::ALG, self::AESKEY, OPENSSL_RAW_DATA,$iv);
         $this->authToken=(base64_encode($iv.$encrypted));
     }
 
@@ -102,12 +108,15 @@ class Cbclab_User{
             $authToken=base64_decode($authToken);
             $iv = substr($authToken,0,self::IVLEN);
             $crypted = substr($authToken,self::IVLEN);
-            $username = openssl_decrypt($crypted, self::ALG, self::AESKEY,OPENSSL_RAW_DATA,$iv);
-            // shoutout error if decryption failed
-            if ($username===false){
+            $token = openssl_decrypt($crypted, self::ALG, self::AESKEY,OPENSSL_RAW_DATA,$iv);
+            if ($token===false){
                 $this->__destruct();
                 die('Decryption error');
-            } 
+            }
+	    $token = json_decode($token,true);
+	    $username=$token["loggedUser"];
+	    // shoutout error if decryption failed
+
             // if user exists in backend storage
             if ($this->userExists($username)){
                 $this->loggedUser=$username;
